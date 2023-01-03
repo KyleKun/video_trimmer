@@ -471,10 +471,13 @@ class _ScrollableTrimViewerState extends State<ScrollableTrimViewer>
 
     // log('Local pos: ${details.localPosition}');
     _localPosition = details.localPosition.dx;
+    final double newStartPos = _startPos.dx + _localPosition;
+    final double newEndPos = _endPos.dx + _localPosition;
 
     if (_dragType == EditorDragType.left) {
       _startCircleSize = widget.editorProperties.circleSizeOnDrag;
-      if ((_startPos.dx + details.delta.dx >= 0) &&
+      if ((_endPos.dx - newStartPos >= 100) &&
+          (_startPos.dx + details.delta.dx >= 0) &&
           (_startPos.dx + details.delta.dx <= _endPos.dx) &&
           !(_endPos.dx - _startPos.dx - details.delta.dx > maxLengthPixels!)) {
         _startPos += details.delta;
@@ -492,7 +495,8 @@ class _ScrollableTrimViewerState extends State<ScrollableTrimViewer>
       }
     } else {
       _endCircleSize = widget.editorProperties.circleSizeOnDrag;
-      if ((_endPos.dx + details.delta.dx <= _thumbnailViewerW) &&
+      if ((newEndPos - _startPos.dx >= 100) &&
+          (_endPos.dx + details.delta.dx <= _thumbnailViewerW) &&
           (_endPos.dx + details.delta.dx >= _startPos.dx) &&
           !(_endPos.dx - _startPos.dx + details.delta.dx > maxLengthPixels!)) {
         _endPos += details.delta;
@@ -589,23 +593,13 @@ class _ScrollableTrimViewerState extends State<ScrollableTrimViewer>
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
                         Text(
-                          Duration(milliseconds: _videoStartPos.toInt())
-                              .format(widget.durationStyle),
-                          style: widget.durationTextStyle,
-                        ),
-                        videoPlayerController.value.isPlaying
-                            ? Text(
-                                Duration(milliseconds: _currentPosition.toInt())
-                                    .format(widget.durationStyle),
-                                style: widget.durationTextStyle,
-                              )
-                            : Container(),
-                        Text(
-                          Duration(milliseconds: _videoEndPos.toInt())
+                          Duration(
+                                  milliseconds: _videoEndPos.toInt() -
+                                      _videoStartPos.toInt())
                               .format(widget.durationStyle),
                           style: widget.durationTextStyle,
                         ),
