@@ -433,23 +433,13 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
                         Text(
-                          Duration(milliseconds: _videoStartPos.toInt())
-                              .format(widget.durationStyle),
-                          style: widget.durationTextStyle,
-                        ),
-                        videoPlayerController.value.isPlaying
-                            ? Text(
-                                Duration(milliseconds: _currentPosition.toInt())
-                                    .format(widget.durationStyle),
-                                style: widget.durationTextStyle,
-                              )
-                            : Container(),
-                        Text(
-                          Duration(milliseconds: _videoEndPos.toInt())
+                          Duration(
+                                  milliseconds: _videoEndPos.toInt() -
+                                      _videoStartPos.toInt())
                               .format(widget.durationStyle),
                           style: widget.durationTextStyle,
                         ),
