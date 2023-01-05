@@ -23,6 +23,9 @@ class FixedTrimViewer extends StatefulWidget {
   /// For defining the total trimmer area height
   final double viewerHeight;
 
+  /// For defining the minimum length of the output video.
+  final Duration minVideoLength;
+
   /// For defining the maximum length of the output video.
   final Duration maxVideoLength;
 
@@ -118,6 +121,7 @@ class FixedTrimViewer extends StatefulWidget {
     required this.onThumbnailLoadingComplete,
     this.viewerWidth = 50.0 * 8,
     this.viewerHeight = 50,
+    this.minVideoLength = const Duration(seconds: 1),
     this.maxVideoLength = const Duration(milliseconds: 0),
     this.showDuration = true,
     this.durationTextStyle = const TextStyle(color: Colors.white),
@@ -159,8 +163,10 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
   late double _endCircleSize;
   late double _borderRadius;
 
+  double? minFraction;
   double? fraction;
   double? maxLengthPixels;
+  double? minLengthPixels;
 
   FixedThumbnailViewer? thumbnailWidget;
 
@@ -180,6 +186,7 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
   /// Whether the dragging is allowed. Dragging is ignore if the user's gesture is outside
   /// of the frame, to make the UI more realistic.
   bool _allowDrag = true;
+  bool _isCenterDrag = false;
 
   @override
   void initState() {
@@ -219,13 +226,17 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
         if (widget.maxVideoLength > const Duration(milliseconds: 0) &&
             widget.maxVideoLength < totalDuration) {
           if (widget.maxVideoLength < totalDuration) {
+            minFraction = widget.minVideoLength.inMilliseconds /
+                totalDuration.inMilliseconds;
             fraction = widget.maxVideoLength.inMilliseconds /
                 totalDuration.inMilliseconds;
 
+            minLengthPixels = _thumbnailViewerW * minFraction!;
             maxLengthPixels = _thumbnailViewerW * fraction!;
           }
         } else {
           maxLengthPixels = _thumbnailViewerW;
+          minLengthPixels = widget.minVideoLength.inMilliseconds.toDouble();
         }
 
         _videoEndPos = fraction != null
@@ -317,14 +328,17 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
     if (startDifference <= widget.editorProperties.sideTapSize &&
         endDifference >= -widget.editorProperties.sideTapSize) {
       _allowDrag = true;
+      _isCenterDrag = false;
     } else {
-      debugPrint("Dragging is outside of frame, ignoring gesture...");
-      _allowDrag = false;
-      return;
+      debugPrint("Dragging is outside of frame, applying center drag");
+      _isCenterDrag = true;
+      _allowDrag = true;
     }
 
     // Now we determine which part is dragged
-    if (details.localPosition.dx <=
+    if (_isCenterDrag) {
+      _dragType = EditorDragType.center;
+    } else if (details.localPosition.dx <=
         _startPos.dx + widget.editorProperties.sideTapSize) {
       _dragType = EditorDragType.left;
     } else if (details.localPosition.dx <=
@@ -346,7 +360,7 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
 
     if (_dragType == EditorDragType.left) {
       _startCircleSize = widget.editorProperties.circleSizeOnDrag;
-      if ((_endPos.dx - newStartPos >= 100) &&
+      if ((_endPos.dx - newStartPos >= minLengthPixels!) &&
           (newStartPos >= 0) &&
           (newStartPos <= _endPos.dx) &&
           !(_endPos.dx - _startPos.dx - details.delta.dx > maxLengthPixels!)) {
@@ -364,7 +378,7 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
       }
     } else {
       _endCircleSize = widget.editorProperties.circleSizeOnDrag;
-      if ((newEndPos - _startPos.dx >= 100) &&
+      if ((newEndPos - _startPos.dx >= minLengthPixels!) &&
           (newEndPos <= _thumbnailViewerW) &&
           (newEndPos >= _startPos.dx) &&
           !(_endPos.dx - _startPos.dx + details.delta.dx > maxLengthPixels!)) {
