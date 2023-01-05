@@ -95,6 +95,7 @@ class _TrimmerViewState extends State<TrimmerView> {
                     child: TrimViewer(
                       trimmer: _trimmer,
                       viewerHeight: 50.0,
+                      type: ViewerType.fixed,
                       viewerWidth: MediaQuery.of(context).size.width,
                       durationStyle: DurationStyle.FORMAT_MM_SS,
                       maxVideoLength: const Duration(seconds: 10),
