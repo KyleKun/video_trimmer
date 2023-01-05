@@ -24,7 +24,7 @@ class FixedThumbnailViewer extends StatelessWidget {
     required this.numberOfThumbnails,
     required this.fit,
     required this.onThumbnailLoadingComplete,
-    this.quality = 75,
+    this.quality = 7,
   }) : super(key: key);
 
   Stream<List<Uint8List?>> generateThumbnail() async* {
