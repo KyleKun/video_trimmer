@@ -223,20 +223,22 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
         this.thumbnailWidget = thumbnailWidget;
         Duration totalDuration = videoPlayerController.value.duration;
 
-        if (widget.maxVideoLength > const Duration(milliseconds: 0) &&
-            widget.maxVideoLength < totalDuration) {
-          if (widget.maxVideoLength < totalDuration) {
-            minFraction = widget.minVideoLength.inMilliseconds /
-                totalDuration.inMilliseconds;
-            fraction = widget.maxVideoLength.inMilliseconds /
-                totalDuration.inMilliseconds;
-
-            minLengthPixels = _thumbnailViewerW * minFraction!;
-            maxLengthPixels = _thumbnailViewerW * fraction!;
-          }
-        } else {
+        if (totalDuration.inMilliseconds <= 1500) {
           maxLengthPixels = _thumbnailViewerW;
-          minLengthPixels = widget.minVideoLength.inMilliseconds.toDouble();
+          minLengthPixels = _thumbnailViewerW;
+        } else if (widget.maxVideoLength > const Duration(milliseconds: 0) &&
+            widget.maxVideoLength < totalDuration) {
+          minFraction = widget.minVideoLength.inMilliseconds /
+              totalDuration.inMilliseconds;
+          fraction = widget.maxVideoLength.inMilliseconds /
+              totalDuration.inMilliseconds;
+          minLengthPixels = _thumbnailViewerW * minFraction!;
+          maxLengthPixels = _thumbnailViewerW * fraction!;
+        } else {
+          minFraction = widget.minVideoLength.inMilliseconds /
+              totalDuration.inMilliseconds;
+          maxLengthPixels = _thumbnailViewerW;
+          minLengthPixels = _thumbnailViewerW * minFraction!;
         }
 
         _videoEndPos = fraction != null
