@@ -23,8 +23,7 @@ enum TrimmerEvent { initialized }
 class Trimmer {
   // final FlutterFFmpeg _flutterFFmpeg = FFmpegKit();
 
-  final StreamController<TrimmerEvent> _controller =
-      StreamController<TrimmerEvent>.broadcast();
+  final StreamController<TrimmerEvent> _controller = StreamController<TrimmerEvent>.broadcast();
 
   VideoPlayerController? _videoPlayerController;
 
@@ -73,8 +72,7 @@ class Trimmer {
     }
 
     // Directory + folder name
-    final Directory directoryFolder =
-        Directory('${directory!.path}/$folderName/');
+    final Directory directoryFolder = Directory('${directory!.path}/$folderName/');
 
     if (await directoryFolder.exists()) {
       // If folder already exists return path
@@ -83,8 +81,7 @@ class Trimmer {
     } else {
       debugPrint('Creating');
       // If folder does not exists create folder and then return its path
-      final Directory directoryNewFolder =
-          await directoryFolder.create(recursive: true);
+      final Directory directoryNewFolder = await directoryFolder.create(recursive: true);
       return directoryNewFolder.path;
     }
   }
@@ -179,11 +176,8 @@ class Trimmer {
     String command;
 
     // Formatting Date and Time
-    String dateTime = DateFormat.yMMMd()
-        .addPattern('-')
-        .add_Hms()
-        .format(DateTime.now())
-        .toString();
+    String dateTime =
+        DateFormat.yMMMd().addPattern('-').add_Hms().format(DateTime.now()).toString();
 
     // String _resultString;
     String outputPath;
@@ -247,9 +241,10 @@ class Trimmer {
 
     command += '"$outputPath"';
 
+    debugPrint("FFmpeg Command: $command");
+
     FFmpegKit.executeAsync(command, (session) async {
-      final state =
-          FFmpegKitConfig.sessionStateToString(await session.getState());
+      final state = FFmpegKitConfig.sessionStateToString(await session.getState());
       final returnCode = await session.getReturnCode();
 
       debugPrint("FFmpeg process exited with state $state and rc $returnCode");
@@ -260,6 +255,8 @@ class Trimmer {
         onSave(outputPath);
       } else {
         debugPrint("FFmpeg processing failed.");
+        final logs = await session.getLogsAsString();
+        debugPrint(logs);
         debugPrint('Couldn\'t save the video');
         onSave(null);
       }
@@ -286,10 +283,8 @@ class Trimmer {
       await videoPlayerController!.pause();
       return false;
     } else {
-      if (videoPlayerController!.value.position.inMilliseconds >=
-          endValue.toInt()) {
-        await videoPlayerController!
-            .seekTo(Duration(milliseconds: startValue.toInt()));
+      if (videoPlayerController!.value.position.inMilliseconds >= endValue.toInt()) {
+        await videoPlayerController!.seekTo(Duration(milliseconds: startValue.toInt()));
         await videoPlayerController!.play();
         return true;
       } else {

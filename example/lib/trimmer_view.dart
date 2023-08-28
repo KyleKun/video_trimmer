@@ -40,6 +40,8 @@ class _TrimmerViewState extends State<TrimmerView> {
     _trimmer.saveTrimmedVideo(
       startValue: _startValue,
       endValue: _endValue,
+      ffmpegCommand: '-c:a aac -c:v copy',
+      customVideoFormat: '.mp4',
       onSave: (outputPath) {
         setState(() {
           _progressVisibility = false;
@@ -109,8 +111,7 @@ class _TrimmerViewState extends State<TrimmerView> {
                       ),
                       onChangeStart: (value) => _startValue = value,
                       onChangeEnd: (value) => _endValue = value,
-                      onChangePlaybackState: (value) =>
-                          setState(() => _isPlaying = value),
+                      onChangePlaybackState: (value) => setState(() => _isPlaying = value),
                     ),
                   ),
                 ),

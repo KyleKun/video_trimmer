@@ -24,6 +24,7 @@ class HomePage extends StatelessWidget {
             );
             if (result != null) {
               File file = File(result.files.single.path!);
+              // ignore: use_build_context_synchronously
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) {
                   return TrimmerView(file);
