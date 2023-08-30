@@ -1,15 +1,4 @@
-<a href="https://github.com/Solido/awesome-flutter">
-   <img alt="Awesome Flutter" src="https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square" />
-</a>
-<a href="https://pub.dev/packages/video_trimmer">
-  <img alt="Pub Version" src="https://img.shields.io/pub/v/video_trimmer?style=flat-square">
-</a>
-<a href="https://github.com/sbis04/video_trimmer/stargazers">
-  <img alt="GitHub stars" src="https://img.shields.io/github/stars/sbis04/video_trimmer?style=flat-square">
-</a>
-<a href="https://github.com/sbis04/video_trimmer/blob/master/LICENSE">
-  <img alt="GitHub license" src="https://img.shields.io/github/license/sbis04/video_trimmer?style=flat-square">
-</a>
+# A customized fork of Video Trimmer, used in One Second Diary.
 
 <p align="center">
   <img src="https://github.com/sbis04/video_trimmer/raw/main/screenshots/cover.png" alt="Video Trimmer" />

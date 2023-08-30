@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+/// OSD doesn't crop with trimmer, it just picks the start and end positions and use on the unique ffmpeg command there
 class Preview extends StatefulWidget {
   final String? outputVideoPath;
 
@@ -22,6 +23,7 @@ class _PreviewState extends State<Preview> {
     _controller = VideoPlayerController.file(File(widget.outputVideoPath!))
       ..initialize().then((_) {
         setState(() {});
+        _controller.setLooping(true);
         _controller.play();
       });
   }
