@@ -318,30 +318,22 @@ class _FixedTrimViewerState extends State<FixedTrimViewer> with TickerProviderSt
     debugPrint((_startPos.dx - details.localPosition.dx).abs().toString());
     debugPrint((_endPos.dx - details.localPosition.dx).abs().toString());
 
-    final startDifference = _startPos.dx - details.localPosition.dx;
-    final endDifference = _endPos.dx - details.localPosition.dx;
+    final startDifference = details.localPosition.dx - _startPos.dx;
+    final endDifference = details.localPosition.dx - _endPos.dx;
 
-    // First we determine whether the dragging motion should be allowed. The allowed
-    // zone is widget.sideTapSize (left) + frame (center) + widget.sideTapSize (right)
-    if (startDifference <= widget.editorProperties.sideTapSize &&
-        endDifference >= -widget.editorProperties.sideTapSize) {
+    // Determine which part is dragged
+    if (startDifference.abs() <= widget.editorProperties.sideTapSize) {
+      _dragType = EditorDragType.left;
+      _allowDrag = true;
+      _isCenterDrag = false;
+    } else if (endDifference.abs() <= widget.editorProperties.sideTapSize) {
+      _dragType = EditorDragType.right;
       _allowDrag = true;
       _isCenterDrag = false;
     } else {
-      debugPrint("Dragging is outside of frame, applying center drag");
-      _isCenterDrag = true;
+      _dragType = EditorDragType.center;
       _allowDrag = true;
-    }
-
-    // Now we determine which part is dragged
-    if (_isCenterDrag) {
-      _dragType = EditorDragType.center;
-    } else if (details.localPosition.dx <= _startPos.dx + widget.editorProperties.sideTapSize) {
-      _dragType = EditorDragType.left;
-    } else if (details.localPosition.dx <= _endPos.dx - widget.editorProperties.sideTapSize) {
-      _dragType = EditorDragType.center;
-    } else {
-      _dragType = EditorDragType.right;
+      _isCenterDrag = true;
     }
   }
 
