@@ -314,19 +314,35 @@ class _FixedTrimViewerState extends State<FixedTrimViewer> with TickerProviderSt
   /// Determine which [EditorDragType] is used.
   void _onDragStart(DragStartDetails details) {
     debugPrint("_onDragStart");
-    debugPrint(details.localPosition.toString());
-    debugPrint((_startPos.dx - details.localPosition.dx).abs().toString());
-    debugPrint((_endPos.dx - details.localPosition.dx).abs().toString());
+    debugPrint('StartPos: ${_startPos.dx}');
+    debugPrint('EndPos: ${_endPos.dx}');
 
-    final startDifference = details.localPosition.dx - _startPos.dx;
-    final endDifference = details.localPosition.dx - _endPos.dx;
+    final tapDx = details.localPosition.dx;
+    debugPrint('TapDx: $tapDx');
+
+    final sideTapSize = widget.editorProperties.sideTapSize;
+    debugPrint('SideTapSize: $sideTapSize');
+
+    final startDifference = (tapDx * 0.92) - _startPos.dx;
+    final endDifference = (tapDx * 0.92) - _endPos.dx;
+    debugPrint('StartDiff: $startDifference');
+    debugPrint('EndDiff: $endDifference');
+
+    // Left range
+    final startIsWithinLeftRange = startDifference.abs() <= sideTapSize;
+    final endIsWithinLeftRange = endDifference.abs() <= sideTapSize;
+
+    // Right range
+    final startIsWithinRightRange =
+        tapDx >= _startPos.dx && tapDx <= _startPos.dx + sideTapSize * 1.75;
+    final endIsWithinRightRange = tapDx >= _endPos.dx && tapDx <= _endPos.dx + sideTapSize * 1.75;
 
     // Determine which part is dragged
-    if (startDifference.abs() <= widget.editorProperties.sideTapSize) {
+    if (startIsWithinLeftRange || startIsWithinRightRange) {
       _dragType = EditorDragType.left;
       _allowDrag = true;
       _isCenterDrag = false;
-    } else if (endDifference.abs() <= widget.editorProperties.sideTapSize) {
+    } else if (endIsWithinLeftRange || endIsWithinRightRange) {
       _dragType = EditorDragType.right;
       _allowDrag = true;
       _isCenterDrag = false;
