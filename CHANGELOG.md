@@ -1,3 +1,6 @@
+# 2.1 onwards
+* One Second Diary specific changes
+
 ## 2.0.1
 
 * Add new property for specifying `DurationStyle`.

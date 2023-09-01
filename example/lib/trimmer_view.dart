@@ -98,7 +98,7 @@ class _TrimmerViewState extends State<TrimmerView> {
                       trimmer: _trimmer,
                       viewerHeight: 50.0,
                       type: ViewerType.fixed,
-                      durationStyle: DurationStyle.FORMAT_MM_SS,
+                      durationStyle: DurationStyle.FORMAT_SS_MS,
                       maxVideoLength: const Duration(milliseconds: 10900),
                       editorProperties: TrimEditorProperties(
                         borderPaintColor: Colors.yellow,
