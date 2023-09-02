@@ -323,8 +323,8 @@ class _FixedTrimViewerState extends State<FixedTrimViewer> with TickerProviderSt
     final sideTapSize = widget.editorProperties.sideTapSize;
     debugPrint('SideTapSize: $sideTapSize');
 
-    final startDifference = (tapDx * 0.92) - _startPos.dx;
-    final endDifference = (tapDx * 0.92) - _endPos.dx;
+    final startDifference = (tapDx * 0.94) - _startPos.dx;
+    final endDifference = (tapDx * 0.94) - _endPos.dx;
     debugPrint('StartDiff: $startDifference');
     debugPrint('EndDiff: $endDifference');
 
