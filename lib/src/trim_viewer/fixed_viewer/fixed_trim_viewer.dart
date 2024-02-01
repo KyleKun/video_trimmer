@@ -71,6 +71,8 @@ class FixedTrimViewer extends StatefulWidget {
 
   final VoidCallback onThumbnailLoadingComplete;
 
+  final List<double> quickCutNumbers;
+
   /// Widget for displaying the video trimmer.
   ///
   /// This has frame wise preview of the video with a
@@ -131,6 +133,7 @@ class FixedTrimViewer extends StatefulWidget {
     this.onChangePlaybackState,
     this.editorProperties = const TrimEditorProperties(),
     this.areaProperties = const FixedTrimAreaProperties(),
+    this.quickCutNumbers = const [1, 2, 3, 5, 10],
   });
 
   @override
@@ -172,8 +175,6 @@ class _FixedTrimViewerState extends State<FixedTrimViewer> with TickerProviderSt
   Animation<double>? _scrubberAnimation;
   AnimationController? _animationController;
   late Tween<double> _linearTween;
-
-  List<double> quickCutNumber = [1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   /// Quick access to VideoPlayerController, only not null after [TrimmerEvent.initialized]
   /// has been emitted.
@@ -498,7 +499,7 @@ class _FixedTrimViewerState extends State<FixedTrimViewer> with TickerProviderSt
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: [
-                for (double i in quickCutNumber)
+                for (double i in widget.quickCutNumbers)
                   if (i <= (_videoDuration ~/ 1000))
                     Padding(
                       padding: const EdgeInsets.all(10.0),
