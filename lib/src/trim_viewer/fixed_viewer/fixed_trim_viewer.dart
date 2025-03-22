@@ -71,6 +71,8 @@ class FixedTrimViewer extends StatefulWidget {
 
   final VoidCallback onThumbnailLoadingComplete;
 
+  final List<double> quickCutNumbers;
+
   /// Widget for displaying the video trimmer.
   ///
   /// This has frame wise preview of the video with a
@@ -131,6 +133,7 @@ class FixedTrimViewer extends StatefulWidget {
     this.onChangePlaybackState,
     this.editorProperties = const TrimEditorProperties(),
     this.areaProperties = const FixedTrimAreaProperties(),
+    this.quickCutNumbers = const [1, 2, 3, 5, 10],
   });
 
   @override
@@ -172,8 +175,6 @@ class _FixedTrimViewerState extends State<FixedTrimViewer> with TickerProviderSt
   Animation<double>? _scrubberAnimation;
   AnimationController? _animationController;
   late Tween<double> _linearTween;
-
-  int quickCutNumber = 1;
 
   /// Quick access to VideoPlayerController, only not null after [TrimmerEvent.initialized]
   /// has been emitted.
@@ -306,7 +307,7 @@ class _FixedTrimViewerState extends State<FixedTrimViewer> with TickerProviderSt
 
       videoPlayerController.setVolume(1.0);
       _videoDuration = videoPlayerController.value.duration.inMilliseconds;
-      quickCutNumber = (_videoDuration ~/ 1000).clamp(1, 10);
+      //quickCutNumber = (_videoDuration ~/ 1000).clamp(1, 10);
     }
   }
 
@@ -498,56 +499,57 @@ class _FixedTrimViewerState extends State<FixedTrimViewer> with TickerProviderSt
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: [
-                for (int i = 1; i < quickCutNumber + 1; i++)
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: TextButton.icon(
-                      style: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all<Color>(
-                          widget.editorProperties.quickCutForegroundColor,
-                        ),
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          widget.editorProperties.quickCutBackgroundColor,
-                        ),
-                        overlayColor: MaterialStateProperty.all<Color>(
-                          widget.editorProperties.quickCutForegroundColor.withOpacity(0.25),
-                        ),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(35.0),
+                for (double i in widget.quickCutNumbers)
+                  if (i <= (_videoDuration ~/ 1000))
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: TextButton.icon(
+                        style: ButtonStyle(
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                            widget.editorProperties.quickCutForegroundColor,
+                          ),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            widget.editorProperties.quickCutBackgroundColor,
+                          ),
+                          overlayColor: MaterialStateProperty.all<Color>(
+                            widget.editorProperties.quickCutForegroundColor.withOpacity(0.25),
+                          ),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(35.0),
+                            ),
                           ),
                         ),
-                      ),
-                      icon: Icon(
-                        widget.editorProperties.quickCutIcon,
-                        size: widget.editorProperties.quickCutIconSize,
-                      ),
-                      onPressed: () {
-                        _startPos = const Offset(0, 0);
-                        _startFraction = 0.0;
-                        _videoStartPos = 0.0;
-                        _currentPosition = 0;
-                        _linearTween.begin = _startPos.dx;
+                        icon: Icon(
+                          widget.editorProperties.quickCutIcon,
+                          size: widget.editorProperties.quickCutIconSize,
+                        ),
+                        onPressed: () {
+                          _startPos = const Offset(0, 0);
+                          _startFraction = 0.0;
+                          _videoStartPos = 0.0;
+                          _currentPosition = 0;
+                          _linearTween.begin = _startPos.dx;
 
-                        widget.onChangeStart!(_videoStartPos);
-                        videoPlayerController.seekTo(const Duration(milliseconds: 0));
+                          widget.onChangeStart!(_videoStartPos);
+                          videoPlayerController.seekTo(const Duration(milliseconds: 0));
 
-                        _endFraction = (i * 1000) / _videoDuration;
-                        _videoEndPos = _videoDuration * _endFraction;
-                        _endPos = Offset((_endFraction * _thumbnailViewerW), _thumbnailViewerH);
-                        _linearTween.end = _endPos.dx;
-                        widget.onChangeEnd!(_videoEndPos);
+                          _endFraction = (i * 1000) / _videoDuration;
+                          _videoEndPos = _videoDuration * _endFraction;
+                          _endPos = Offset((_endFraction * _thumbnailViewerW), _thumbnailViewerH);
+                          _linearTween.end = _endPos.dx;
+                          widget.onChangeEnd!(_videoEndPos);
 
-                        _animationController!.duration =
-                            Duration(milliseconds: (_videoEndPos - _videoStartPos).toInt());
-                        _animationController!.reset();
-                      },
-                      label: Text(
-                        i.toString(),
-                        style: TextStyle(color: widget.editorProperties.quickCutTextColor),
+                          _animationController!.duration =
+                              Duration(milliseconds: (_videoEndPos - _videoStartPos).toInt());
+                          _animationController!.reset();
+                        },
+                        label: Text(
+                          (i == i.roundToDouble()?i.round():i).toString(),
+                          style: TextStyle(color: widget.editorProperties.quickCutTextColor),
+                        ),
                       ),
                     ),
-                  ),
               ],
             ),
           ),
