@@ -15,7 +15,13 @@ extension DurationFormatExt on Duration {
     final formatPart = style.toString().split('.')[1].split('_');
     formatPart.removeAt(0);
     // HH_MM_SS
-    final millisecondTime = inMilliseconds;
+    int millisecondTime = inMilliseconds;
+
+    // Check if milliseconds are 990 or greater and adjust millisecondTime to avoid .99 cases
+    if (millisecondTime % 1000 >= 990) {
+      millisecondTime = (millisecondTime ~/ 1000 + 1) * 1000;
+    }
+
     final hoursStr = _getDisplayTimeHours(millisecondTime);
     final mStr = _getDisplayTimeMinute(millisecondTime, hours: true);
     final sStr = _getDisplayTimeSecond(millisecondTime);
