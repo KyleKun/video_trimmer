@@ -346,7 +346,7 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
 
     if (_dragType == EditorDragType.left) {
       _startCircleSize = widget.editorProperties.circleSizeOnDrag;
-      if ((_endPos.dx - newStartPos >= 1000) &&
+      if ((_endPos.dx - newStartPos >= 100) &&
           (newStartPos >= 0) &&
           (newStartPos <= _endPos.dx) &&
           !(_endPos.dx - _startPos.dx - details.delta.dx > maxLengthPixels!)) {
@@ -364,7 +364,7 @@ class _FixedTrimViewerState extends State<FixedTrimViewer>
       }
     } else {
       _endCircleSize = widget.editorProperties.circleSizeOnDrag;
-      if ((newEndPos - _startPos.dx >= 1000) &&
+      if ((newEndPos - _startPos.dx >= 100) &&
           (newEndPos <= _thumbnailViewerW) &&
           (newEndPos >= _startPos.dx) &&
           !(_endPos.dx - _startPos.dx + details.delta.dx > maxLengthPixels!)) {
