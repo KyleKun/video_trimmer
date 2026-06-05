@@ -120,6 +120,6 @@ class TrimEditorProperties {
     this.quickCutTextColor = Colors.white,
     this.quickCutBackgroundColor = Colors.grey,
     this.quickCutForegroundColor = Colors.white70,
-    this.sideTapSize = 24,
+    this.sideTapSize = 25,
   });
 }
