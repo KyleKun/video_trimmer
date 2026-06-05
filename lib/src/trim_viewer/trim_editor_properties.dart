@@ -49,6 +49,16 @@ class TrimEditorProperties {
   /// total duration of the video.
   final int sideTapSize;
 
+  final double quickCutIconSize;
+
+  final IconData quickCutIcon;
+
+  final Color quickCutTextColor;
+
+  final Color quickCutBackgroundColor;
+
+  final Color quickCutForegroundColor;
+
   /// Helps defining the Trim Editor properties.
   ///
   /// A better look at the structure of the **Trim Viewer**:
@@ -105,6 +115,11 @@ class TrimEditorProperties {
     this.circlePaintColor = Colors.white,
     this.borderPaintColor = Colors.white,
     this.scrubberPaintColor = Colors.white,
+    this.quickCutIconSize = 20.0,
+    this.quickCutIcon = Icons.cut,
+    this.quickCutTextColor = Colors.white,
+    this.quickCutBackgroundColor = Colors.grey,
+    this.quickCutForegroundColor = Colors.white70,
     this.sideTapSize = 24,
   });
 }
