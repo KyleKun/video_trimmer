@@ -90,8 +90,6 @@ class TrimViewer extends StatefulWidget {
   /// thumbnails are loaded.
   final VoidCallback? onThumbnailLoadingComplete;
 
-  final List<double> quickCutNumbers;
-
   /// Widget for displaying the video trimmer.
   ///
   /// This has frame wise preview of the video with a
@@ -170,7 +168,7 @@ class TrimViewer extends StatefulWidget {
   /// know when all the thumbnails are loaded.
   ///
   const TrimViewer({
-    Key? key,
+    super.key,
     required this.trimmer,
     this.maxVideoLength = const Duration(milliseconds: 0),
     this.type = ViewerType.auto,
@@ -186,8 +184,7 @@ class TrimViewer extends StatefulWidget {
     this.editorProperties = const TrimEditorProperties(),
     this.areaProperties = const TrimAreaProperties(),
     this.onThumbnailLoadingComplete,
-    this.quickCutNumbers = const [1, 2, 3, 5, 10],
-  }) : super(key: key);
+  });
 
   @override
   State<TrimViewer> createState() => _TrimViewerState();
@@ -266,7 +263,6 @@ class _TrimViewerState extends State<TrimViewer> with TickerProviderStateMixin {
           widget.onThumbnailLoadingComplete!();
         }
       },
-      quickCutNumbers: widget.quickCutNumbers,
     );
 
     return _isScrollableAllowed == null
