@@ -15,6 +15,7 @@ import 'package:video_trimmer/src/utils/duration_style.dart';
 import '../../utils/editor_drag_type.dart';
 import 'scrollable_thumbnail_viewer.dart';
 
+/// Widget for displaying the video trimmer.
 class ScrollableTrimViewer extends StatefulWidget {
   /// The Trimmer instance controlling the data.
   final Trimmer trimmer;
@@ -99,8 +100,7 @@ class ScrollableTrimViewer extends StatefulWidget {
   ///
   ///
   /// * [durationTextStyle] is for providing a `TextStyle` to the
-  /// duration text. By default it is set to
-  /// `TextStyle(color: Colors.white)`
+  /// duration text. By default it is set to `TextStyle(color: Colors.white)`.
   ///
   ///
   /// * [onChangeStart] is a callback to the video start position.
@@ -325,7 +325,7 @@ class _ScrollableTrimViewerState extends State<ScrollableTrimViewer>
         final numberOfThumbnailsTotal = (numberOfThumbnailsInArea *
                 (totalDuration.inMilliseconds /
                     trimAreaDuration.inMilliseconds))
-            .toInt();
+            .ceil();
         log('THUMBNAILS: in area=$numberOfThumbnailsInArea, total=$numberOfThumbnailsTotal');
 
         // find precise durations according to the number of thumbnails;
@@ -471,13 +471,10 @@ class _ScrollableTrimViewerState extends State<ScrollableTrimViewer>
 
     // log('Local pos: ${details.localPosition}');
     _localPosition = details.localPosition.dx;
-    final double newStartPos = _startPos.dx + _localPosition;
-    final double newEndPos = _endPos.dx + _localPosition;
 
     if (_dragType == EditorDragType.left) {
       _startCircleSize = widget.editorProperties.circleSizeOnDrag;
-      if ((_endPos.dx - newStartPos >= 100) &&
-          (_startPos.dx + details.delta.dx >= 0) &&
+      if ((_startPos.dx + details.delta.dx >= 0) &&
           (_startPos.dx + details.delta.dx <= _endPos.dx) &&
           !(_endPos.dx - _startPos.dx - details.delta.dx > maxLengthPixels!)) {
         _startPos += details.delta;
@@ -495,8 +492,7 @@ class _ScrollableTrimViewerState extends State<ScrollableTrimViewer>
       }
     } else {
       _endCircleSize = widget.editorProperties.circleSizeOnDrag;
-      if ((newEndPos - _startPos.dx >= 100) &&
-          (_endPos.dx + details.delta.dx <= _thumbnailViewerW) &&
+      if ((_endPos.dx + details.delta.dx <= _thumbnailViewerW) &&
           (_endPos.dx + details.delta.dx >= _startPos.dx) &&
           !(_endPos.dx - _startPos.dx + details.delta.dx > maxLengthPixels!)) {
         _endPos += details.delta;
@@ -593,13 +589,23 @@ class _ScrollableTrimViewerState extends State<ScrollableTrimViewer>
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
                         Text(
-                          Duration(
-                                  milliseconds: _videoEndPos.toInt() -
-                                      _videoStartPos.toInt())
+                          Duration(milliseconds: _videoStartPos.toInt())
+                              .format(widget.durationStyle),
+                          style: widget.durationTextStyle,
+                        ),
+                        videoPlayerController.value.isPlaying
+                            ? Text(
+                                Duration(milliseconds: _currentPosition.toInt())
+                                    .format(widget.durationStyle),
+                                style: widget.durationTextStyle,
+                              )
+                            : Container(),
+                        Text(
+                          Duration(milliseconds: _videoEndPos.toInt())
                               .format(widget.durationStyle),
                           style: widget.durationTextStyle,
                         ),
@@ -691,14 +697,14 @@ class _ScrollableTrimViewerState extends State<ScrollableTrimViewer>
                   ],
                 ),
               ),
-              // This widget is in development for making the DEBUGGING
-              // process of this package easier
+              // This widget is used in development for making the DEBUGGING
+              // process of this package easier.
               Visibility(
                 visible: false,
                 child: Row(
                   children: [
                     Container(
-                      color: Colors.red.withOpacity(0.6),
+                      color: Colors.red.withValues(alpha: 0.6),
                       height: _thumbnailViewerH,
                       // 2% of total trimmer width
                       width: (_thumbnailViewerW == 0.0
@@ -708,7 +714,7 @@ class _ScrollableTrimViewerState extends State<ScrollableTrimViewer>
                     ),
                     const Spacer(),
                     Container(
-                      color: Colors.red.withOpacity(0.6),
+                      color: Colors.red.withValues(alpha: 0.6),
                       height: _thumbnailViewerH,
                       // 2% of total trimmer width
                       width: (_thumbnailViewerW == 0.0

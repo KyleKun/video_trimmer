@@ -15,13 +15,7 @@ extension DurationFormatExt on Duration {
     final formatPart = style.toString().split('.')[1].split('_');
     formatPart.removeAt(0);
     // HH_MM_SS
-    int millisecondTime = inMilliseconds;
-
-    // Check if milliseconds are 990 or greater and adjust millisecondTime to avoid .99 cases
-    if (millisecondTime % 1000 >= 990) {
-      millisecondTime = (millisecondTime ~/ 1000 + 1) * 1000;
-    }
-
+    final millisecondTime = inMilliseconds;
     final hoursStr = _getDisplayTimeHours(millisecondTime);
     final mStr = _getDisplayTimeMinute(millisecondTime, hours: true);
     final sStr = _getDisplayTimeSecond(millisecondTime);
@@ -82,10 +76,12 @@ extension DurationFormatExt on Duration {
   }
 
   /// Get Raw Hours.
-  static int _getRawHours(int milliSecond) => (milliSecond / (3600 * 1000)).floor();
+  static int _getRawHours(int milliSecond) =>
+      (milliSecond / (3600 * 1000)).floor();
 
   /// Get Raw Minute. 0 ~ 59. 1 hours = 0.
-  static int _getMinute(int milliSecond) => (milliSecond / (60 * 1000) % 60).floor();
+  static int _getMinute(int milliSecond) =>
+      (milliSecond / (60 * 1000) % 60).floor();
 
   /// Get Raw Minute
   static int _getRawMinute(int milliSecond) => (milliSecond / 60000).floor();

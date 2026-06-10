@@ -1,5 +1,52 @@
-# 2.1 onwards
-* One Second Diary specific changes
+## 5.0.0
+
+Got rid of the `flutter_ffmpeg` package and now uses a **native video trimmer** (Android and iOS)! 🎉
+
+#### Why the change?
+
+* The most important reason is that the `flutter_ffmpeg` package has been discontinued by the author. Learn more about it [here](https://tanersener.medium.com/saying-goodbye-to-ffmpegkit-33ae939767e1).
+* The native video trimmer is more efficient and faster. And even provides better performance with low memory usage.
+
+#### BREAKING CHANGES
+
+* Remove `ffmpegCommand` and `customVideoFormat` properties. As those were specific to `flutter_ffmpeg` package.
+* `FileFormat` no longer exists. A new enum is introduced called `OutputType` to choose between GIF and video output file.
+* `outputFormat` no longer exists. By default the output has the same format as the original video.
+
+#### Other changes
+
+* New property `qualityGIF` to specify the quality of the GIF.
+* Update dependencies.
+* Update example project.
+* Update README.
+
+## 4.0.2
+
+* Use `withValues` instead of `withOpacity` as it's deprecated.
+
+## 4.0.1
+
+* Update readme.
+
+## 4.0.0
+
+* Fix thumbnail loading issue while using certain video formats.
+* Upgrade dependencies and remove `video_thumbnail` package (uses FFmpeg which is more reliable and efficient).
+* Fix an issue with the video trimmer length being incorrectly calculated breaking the UI.
+
+## 3.0.1
+
+* Updates readme.
+
+## 3.0.0
+
+* **NOTE:** Separates the LTS version into a branched package version. By default, it will use the latest "Full" version of FFmpeg. To install the "LTS" version use the "x.x.x-LTS" version of the package.
+* Updates minimum Flutter version to 3.0.
+* Updates plugin versions.
+
+## 2.1.0
+
+* Update plugin versions.
 
 ## 2.0.1
 
